@@ -1,5 +1,19 @@
 const gallery = document.querySelector(".gallery");
 const filtersContainer = document.querySelector(".filters");
+const loginLink = document.querySelector(".login-link");
+const portfolioTitle = document.querySelector("#portfolio h2");
+const editButton = document.querySelector(".edit-btn");
+
+const token = localStorage.getItem("token");
+
+function updateAdminUI() {
+  if (token) {
+    loginLink.textContent = "logout";
+    loginLink.href = "#";
+    filtersContainer.style.display = "none";
+    editButton.classList.remove("hidden");
+  }
+}
 
 const worksUrl = "http://localhost:5678/api/works";
 const categoriesUrl = "http://localhost:5678/api/categories";
@@ -95,6 +109,7 @@ async function init() {
 
   displayWorks(works);
   displayFilters(categories, works);
+  updateAdminUI();
 }
 
 init();

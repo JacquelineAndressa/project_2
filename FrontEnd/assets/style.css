@@ -238,12 +238,12 @@ li:hover {
   cursor: pointer;
 
   font-family: "Work Sans";
-  font-size: 14px;
+  font-size: 16px;
   color: black;
 }
 
 .edit-btn i {
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .edit-btn:hover {
@@ -379,4 +379,222 @@ footer nav ul {
   margin-top: 20px;
   text-decoration: underline;
   text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+/* *************** MODAL *************** */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.3);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-content {
+  position: relative;
+
+  background-color: white;
+  width: 500px;
+  max-width: 90%;
+
+  border-radius: 10px;
+  padding: 60px 100px;
+}
+
+/* botão fechar (X) */
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  border: none;
+  background: none;
+
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* título */
+.modal-content h3 {
+  text-align: center;
+  margin-bottom: 60px;
+  font-family: "Work Sans";
+  font-size: 24px;
+  font-weight: 500;
+}
+
+/* galeria dentro do modal */
+.modal-gallery {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.modal-divider {
+  margin: 60px 0px 30px 0px;
+
+  border: none;
+  height: 1px;
+
+  background-color: #b3b3b3;
+  width: 100%;
+}
+
+/* botão adicionar foto */
+.modal-add-btn {
+  display: block;
+  margin: 30px auto 0;
+
+  width: 200px;
+  padding: 10px;
+
+  background-color: #1d6154;
+  color: white;
+
+  border: none;
+  border-radius: 60px;
+
+  font-family: "Syne";
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.modal-gallery img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  display: block;
+}
+
+.modal-work {
+  position: relative;
+}
+
+.modal-work img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+
+  width: 22px;
+  height: 22px;
+
+  border: none;
+  border-radius: 2px;
+  background-color: black;
+  color: white;
+
+  font-size: 11px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*************** Modal Add Photo ***************/
+
+.modal-back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.add-photo-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.photo-upload-box {
+  background-color: #e8f1f6;
+  border-radius: 3px;
+  padding: 20px;
+  margin-bottom: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.photo-upload-box i {
+  font-size: 60px;
+  color: #b9c5cc;
+}
+
+.upload-photo-btn {
+  border: none;
+  background-color: #cbd6dc;
+  color: #306685;
+  border-radius: 50px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.add-photo-form label {
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.add-photo-form input,
+.add-photo-form select {
+  height: 45px;
+  margin-bottom: 20px;
+  border: none;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+  padding: 0 15px;
+}
+
+.submit-photo-btn {
+  display: block;
+  margin: 30px auto 0;
+  width: 200px;
+  padding: 10px;
+  background-color: #a7a7a7;
+  color: white;
+  border: none;
+  border-radius: 60px;
+  font-family: "Syne";
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.photo-preview {
+  max-width: 100%;
+  max-height: 170px;
+  object-fit: contain;
+  display: block;
+}
+
+.photo-preview.hidden {
+  display: none;
 }

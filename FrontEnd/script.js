@@ -1,5 +1,7 @@
-// ------------SELECTORS (connecting JS to HTML)----------------
-// ------------JS needs references to HTML elements to work with them_------------
+// ======================================================
+// 1. SELECTORS (Connecting JS to HTML)
+// ======================================================
+// JS needs references to HTML elements to manipulate the DOM
 
 const gallery = document.querySelector(".gallery");
 const filtersContainer = document.querySelector(".filters");
@@ -22,42 +24,43 @@ const uploadText = document.getElementById("upload-text");
 const photoPreview = document.getElementById("photo-preview");
 
 const categorySelect = document.getElementById("photo-category");
-
 const addPhotoForm = document.getElementById("add-photo-form");
 const titleInput = document.getElementById("photo-title");
+const submitButton = document.getElementById("submit-photo-btn");
 
-// ------------TOKEN (authentication)----------------
-// -----------Token is stored in localStorage after successful login, and is used to determine 
-// if user is admin and to authorize API requests-----
+// ======================================================
+// 2. AUTHENTICATION (Token)
+// ======================================================
+// Token is stored in localStorage after login
+// Used to:
+// - check if user is admin
+// - authorize API requests
 
-// Vai no navegador e pega o valor chamado token
 function getToken() {
   return localStorage.getItem("token");
 }
-// Ela muda a interface quando o usuário está logado
+
 function updateAdminUI() {
   if (getToken()) {
     loginLink.textContent = "logout";
     loginLink.href = "#";
-    // remove os filtros da tela
     filtersContainer.style.display = "none";
-    // mostra botão de edição
     editButton.classList.remove("hidden");
   }
 }
-// Essas URLs são endpoints da API que me permitem buscar dados do backend usando fetch.
+// ======================================================
+// 3. API CONFIG (Endpoints)
+// ======================================================
 const worksUrl = "http://localhost:5678/api/works";
 const categoriesUrl = "http://localhost:5678/api/categories";
 
-// -------------FETCHING DATA (works and categories)----------------
-// ----FETCH (getting data from API), Go to the server → get data → convert it to JS----
-// fetch(worksUrl): buscar dados do backend/ permitir que você mostre eles na tela
-// Não mexe direto no HTML. 
-// Alimenta outra função que mexe no HTML (displayWorks).
-
+// ======================================================
+// 4. FETCH DATA (Async / API calls)
+// ======================================================
+// Get data from backend and convert to JSON
 // cria uma função que pode usar await. 
+  
 async function fetchWorks() {
-  // tenta executar o código
   try {
     // vai no backend buscar dados
     const response = await fetch(worksUrl);
@@ -71,7 +74,6 @@ async function fetchWorks() {
     return await response.json();
     // se der erro, trata aqui
   } catch (error) {
-    // mostra erro e retorna lista vazia.
     console.error("Error fetching works:", error);
     return [];
   }
@@ -92,8 +94,10 @@ async function fetchCategories() {
   }
 }
 
-// ------DISPLAY (rendering elements)-----
-// ----Data → HTML elements → display on screen-----
+// ======================================================
+// 5. RENDER (Display data in the DOM)
+// ======================================================
+// Transform data → HTML elements → show on screen
 
 function displayWorks(works) {
   gallery.innerHTML = "";
@@ -115,8 +119,10 @@ function displayWorks(works) {
   });
 }
 
-// -----FILTERS-----
-// ----works.filter, Show only what the user selected----
+// ======================================================
+// 6. FILTERS (Category filtering)
+// ======================================================
+// Show only selected category
 
 function createFilterButton(name, categoryId, works) {
   const button = document.createElement("button");
@@ -154,7 +160,9 @@ function displayFilters(categories, works) {
   });
 }
 
-//  --------------Seletores de categorias-----------------(opcao oferecida quando o usuario add uma nova foto)
+// ======================================================
+// 7. CATEGORY SELECT (Form dropdown)
+// ======================================================
   // “criei uma função que vai preencher o select”
 function populateCategorySelect(categories) {   
   // “limpa o select e deixa só a primeira opção”
@@ -172,14 +180,35 @@ function populateCategorySelect(categories) {
   });
 }
 
-// ------MODAL (open / close)-----
-// -----show and hide modal, hidden = invisible-----
+// ======================================================
+// 8. FORM VALIDATION (Enable submit button only when form is valid)
+// ======================================================
+
+function checkFormValidity() {
+  const file = photoFileInput.files[0];
+  const title = titleInput.value.trim();
+  const category = categorySelect.value;
+
+  if (file && title && category) {
+    submitButton.classList.add("active");
+    submitButton.disabled = false;
+  } else {
+    submitButton.classList.remove("active");
+    submitButton.disabled = true;
+  }
+}
+
+// ======================================================
+// 9. MODAL (Open / Close / Navigation)
+// ======================================================
 
 function openModal() {
+  console.log("openModal");
   modalOverlay.classList.remove("hidden");
 }
 
 function showGalleryView() {
+  console.log("showGalleryView");
   modalGalleryView.classList.remove("hidden");
   modalAddView.classList.add("hidden");
 }
@@ -190,14 +219,22 @@ function showAddPhotoView() {
 }
 
 function closeModal() {
+  console.log("closeModal");
   modalOverlay.classList.add("hidden");
   showGalleryView();
 }
 
-editButton.addEventListener("click", openModal); // ----EVENTS (user interactions)-----
+// ======================================================
+// 10. EVENTS (User interactions)
+// ======================================================
+
+editButton.addEventListener("click", openModal); 
 modalClose.addEventListener("click", closeModal);
-openAddPhotoButton.addEventListener("click", showAddPhotoView); // -----SWITCHING MODAL VIEWS-----
-backToGalleryButton.addEventListener("click", showGalleryView); // ----One view appears, the other disappears----
+openAddPhotoButton.addEventListener("click", showAddPhotoView); 
+backToGalleryButton.addEventListener("click", showGalleryView); 
+
+titleInput.addEventListener("input", checkFormValidity);
+categorySelect.addEventListener("change", checkFormValidity);
 
 loginLink.addEventListener("click", (event) => {
   if (getToken()) {
@@ -207,13 +244,21 @@ loginLink.addEventListener("click", (event) => {
   }
 });
 
-// ------IMAGE UPLOAD + PREVIEW------
-// ----User selects image → show preview instantly----
+modalOverlay.addEventListener("mousedown", (event) => {
+  if (event.target === modalOverlay) {
+    closeModal();
+  }
+});
+
+// ======================================================
+// 11. IMAGE PREVIEW (Before upload)
+// ======================================================
 
 photoFileInput.addEventListener("change", () => {
   const file = photoFileInput.files[0];
 
   if (!file) {
+    checkFormValidity(); // 👈 ainda atualiza o botão
     return;
   }
 
@@ -225,38 +270,65 @@ photoFileInput.addEventListener("change", () => {
   uploadIcon.classList.add("hidden");
   uploadLabel.classList.add("hidden");
   uploadText.classList.add("hidden");
-});
 
-  // “Quando o formulário for enviado, execute esta função.”
-  // addPhotoForm → é o formulário do modal “Add Photo”
-  // addEventListener → adiciona um evento
-  // "submit" → esse evento acontece quando o formulário é enviado
-  // (event) => { ... } → função que será executada
-addPhotoForm.addEventListener("submit", (event) => { // toda esse codigo é uma etapa de validação, não de envio.
-  // Prevent the default form submission behavior.
+  checkFormValidity(); 
+});
+  
+ // ======================================================
+// 12. FORM SUBMISSION (POST new project)
+// ======================================================
+addPhotoForm.addEventListener("submit", async (event) => { 
+  console.log("SUBMIT START");
   event.preventDefault();
   // “Pegue a imagem que o usuário escolheu.”
   const file = photoFileInput.files[0];
-  // Get the title entered by the user
   const title = titleInput.value;
-  // Get the selected category
   const category = categorySelect.value;
-  // Check if any required field is missing
   if (!file || !title || !category) {
-    alert("Please fill all fields");
-    // Stop the function if validation fails
     return;
   }
-  // Form validation passed.
-  console.log("Form is valid!");
-});
+    const formData = new FormData();
+  formData.append("image", file);
+  formData.append("title", title);
+  formData.append("category", category);
 
-modalOverlay.addEventListener("click", (event) => {
-  if (event.target === modalOverlay) {
-    closeModal();
+  try {
+    const response = await fetch("http://localhost:5678/api/works", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error("Error adding project");
+    }
+
+    const updatedWorks = await fetchWorks();
+    displayWorks(updatedWorks);
+    displayModalWorks(updatedWorks);
+
+    addPhotoForm.reset();
+    photoPreview.src = "";
+    photoPreview.classList.add("hidden");
+
+    uploadIcon.classList.remove("hidden");
+    uploadLabel.classList.remove("hidden");
+    uploadText.classList.remove("hidden");
+
+   showGalleryView();
+   checkFormValidity();
+
+  } catch (error) {
+    console.error(error);
+    alert("Error adding project");
   }
 });
 
+// ======================================================
+// 13. MODAL GALLERY (Delete works)
+// ======================================================
 function displayModalWorks(works) {
   modalGallery.innerHTML = "";  
 
@@ -277,7 +349,7 @@ function displayModalWorks(works) {
     deleteButton.addEventListener("click", async () => {
   try {
     const response = await fetch(`http://localhost:5678/api/works/${work.id}`, {
-      method: "DELETE",  // ------DELETE (API + DOM) Delete from backend------                
+      method: "DELETE",                
       headers: {
         "Authorization": `Bearer ${getToken()}`
       }
@@ -304,21 +376,22 @@ function displayModalWorks(works) {
   });
 }
 
-// -------INIT FUNCTION------
-// ----When the page loads → build everything----
+// ======================================================
+// 14. INIT (Start app)
+// ======================================================
+// Runs when page loads
 
 async function init() {
 
   const works = await fetchWorks();
   const categories = await fetchCategories();
 
-  // -----Runs when the page loads.----
-
   displayWorks(works);
   displayModalWorks(works);
   displayFilters(categories, works);
   populateCategorySelect(categories);
   updateAdminUI();
+  checkFormValidity();
 }
 
 init();

@@ -24,10 +24,10 @@ form.addEventListener("submit", async (event) => {
 
     const data = await response.json();
 
-    // salvar token
+    // save token
     localStorage.setItem("token", data.token);
 
-    // redirecionar
+    // redirect
     window.location.href = "index.html";
   } catch (error) {
     document.getElementById("error-message").textContent =

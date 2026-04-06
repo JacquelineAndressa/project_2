@@ -1,7 +1,6 @@
 // ======================================================
 // 1. SELECTORS (Connecting JS to HTML)
 // ======================================================
-// JS needs references to HTML elements to manipulate the DOM
 
 const gallery = document.querySelector(".gallery");
 const filtersContainer = document.querySelector(".filters");
@@ -31,10 +30,6 @@ const submitButton = document.getElementById("submit-photo-btn");
 // ======================================================
 // 2. AUTHENTICATION (Token)
 // ======================================================
-// Token is stored in localStorage after login
-// Used to:
-// - check if user is admin
-// - authorize API requests
 
 function getToken() {
   return localStorage.getItem("token");
@@ -57,22 +52,17 @@ const categoriesUrl = "http://localhost:5678/api/categories";
 // ======================================================
 // 4. FETCH DATA (Async / API calls)
 // ======================================================
-// Get data from backend and convert to JSON
-// cria uma função que pode usar await. 
   
 async function fetchWorks() {
   try {
-    // vai no backend buscar dados
     const response = await fetch(worksUrl);
 
-    // se algo deu errado
     if (!response.ok) {
-      // cria um erro manual. “Pare tudo aqui e vá para o catch”
+      
       throw new Error(`HTTP error: ${response.status}`);
     }
-// transforma resposta em dados JS. Evita que o site quebre se o backend tiver um problema.s
+
     return await response.json();
-    // se der erro, trata aqui
   } catch (error) {
     console.error("Error fetching works:", error);
     return [];
@@ -122,7 +112,6 @@ function displayWorks(works) {
 // ======================================================
 // 6. FILTERS (Category filtering)
 // ======================================================
-// Show only selected category
 
 function createFilterButton(name, categoryId, works) {
   const button = document.createElement("button");
@@ -163,19 +152,15 @@ function displayFilters(categories, works) {
 // ======================================================
 // 7. CATEGORY SELECT (Form dropdown)
 // ======================================================
-  // “criei uma função que vai preencher o select”
+
 function populateCategorySelect(categories) {   
-  // “limpa o select e deixa só a primeira opção”
   categorySelect.innerHTML = '<option value="">Select a category</option>';
- // “para cada categoria que veio da API”
+
   categories.forEach((category) => {
-    // “cria uma nova opção do select”
     const option = document.createElement("option");
-    // valor que será enviado para a API depois
+    
     option.value = category.id;
-     // texto que aparece na tela
     option.textContent = category.name;
-     // coloca essa opção dentro do select
     categorySelect.appendChild(option);
   });
 }
@@ -203,12 +188,10 @@ function checkFormValidity() {
 // ======================================================
 
 function openModal() {
-  console.log("openModal");
   modalOverlay.classList.remove("hidden");
 }
 
 function showGalleryView() {
-  console.log("showGalleryView");
   modalGalleryView.classList.remove("hidden");
   modalAddView.classList.add("hidden");
 }
@@ -219,7 +202,6 @@ function showAddPhotoView() {
 }
 
 function closeModal() {
-  console.log("closeModal");
   modalOverlay.classList.add("hidden");
   showGalleryView();
 }
@@ -258,7 +240,7 @@ photoFileInput.addEventListener("change", () => {
   const file = photoFileInput.files[0];
 
   if (!file) {
-    checkFormValidity(); // 👈 ainda atualiza o botão
+    checkFormValidity(); 
     return;
   }
 
@@ -277,12 +259,11 @@ photoFileInput.addEventListener("change", () => {
  // ======================================================
 // 12. FORM SUBMISSION (POST new project)
 // ======================================================
+
 addPhotoForm.addEventListener("submit", async (event) => { 
-  console.log("SUBMIT START");
   event.preventDefault();
-  // “Pegue a imagem que o usuário escolheu.”
   const file = photoFileInput.files[0];
-  const title = titleInput.value;
+  const title = titleInput.value.trim();
   const category = categorySelect.value;
   if (!file || !title || !category) {
     return;
@@ -329,6 +310,7 @@ addPhotoForm.addEventListener("submit", async (event) => {
 // ======================================================
 // 13. MODAL GALLERY (Delete works)
 // ======================================================
+
 function displayModalWorks(works) {
   modalGallery.innerHTML = "";  
 
@@ -359,7 +341,7 @@ function displayModalWorks(works) {
       throw new Error("Failed to delete project");
     }
 
-    figure.remove(); // ------Remove from frontend------ 
+    figure.remove(); 
 
     const mainGalleryFigure = document.querySelector(`.gallery figure[data-id="${work.id}"]`);
     if (mainGalleryFigure) {

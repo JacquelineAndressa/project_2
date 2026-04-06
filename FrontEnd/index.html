@@ -109,7 +109,7 @@
               <i class="fa-regular fa-image" id="upload-icon"></i>
 
               <label for="photo-file" class="upload-photo-btn" id="upload-label">+ Add photo</label>
-              <input type="file" id="photo-file" name="image" accept=".jpg,.jpeg,.png" hidden />
+              <input type="file" id="photo-file" name="image" accept=".jpg,.jpeg,.png" hidden required />
 
               <p id="upload-text">jpg, png: 4mb max</p>
 
@@ -117,10 +117,10 @@
             </div>
 
             <label for="photo-title">Title</label>
-            <input type="text" id="photo-title" name="title" />
+            <input type="text" id="photo-title" name="title" required />
 
             <label for="photo-category">Category</label>
-            <select id="photo-category" name="category">
+            <select id="photo-category" name="category" required>
               <option value="">Select a category</option>
             </select>
 
